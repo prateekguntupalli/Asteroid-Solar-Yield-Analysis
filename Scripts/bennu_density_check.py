@@ -11,7 +11,7 @@ initial_center = mesh.center_mass
 # Re-centering the mesh so (0,0,0) is at the center of mass
 mesh.vertices -= initial_center
 
-#Computing bulk density using OSIRIS-REx estimated mass (~7.329e10 kg)
+# Computing bulk density using OSIRIS-REx estimated mass (~7.329e10 kg)
 mass_kg = 7.329e10  # 73.29 million metric tons
 bulk_density = mass_kg / mesh.volume
 
