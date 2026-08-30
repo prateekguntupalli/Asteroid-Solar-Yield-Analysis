@@ -17,7 +17,7 @@ B_diff = 1.0
 
 normals = mesh.face_normals # (N, 3)
 areas = mesh.area_faces # (N,)
-centroids = mesh.triangles.mean(axis=1)  # (N, 3)
+centroids = mesh.triangles.mean(axis=1) # (N, 3)
 
 # Normal recoil coefficient
 f_normal_coeff = (2/3) * albedo * B_diff + (2/3) * (1 - albedo)
