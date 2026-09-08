@@ -22,7 +22,7 @@ areas = mesh.area_faces # (N,)
 
 # Angle of incidence (cos_theta)
 cos_theta = np.dot(normals, s_hat)
-illuminated = cos_theta > 0
+illuminated = cos_theta > 0.08
 
 # Calculateing Force components per face (Optical + Thermal)
 # Direct absorption & specular push along incoming light vector
@@ -31,15 +31,15 @@ n_illuminated = normals[illuminated]
 a_illuminated = areas[illuminated]
 c_illuminated = cos_theta[illuminated]
 
-# Lambertian diffuse coefficient: (2/3) * albedo * B_diff
-# Thermal re-radiation coefficient (in instantaneous equilibrium): (2/3) * (1 - albedo)
-f_normal_coeff = (2/3) * albedo * B_diff + (2/3) * (1 - albedo)
+# --- DECOUPLED FORCE CALCULATIONS ---
+# Component 1: Direct Solar Radiation Pressure (acts along sun_vector)
+F_srp = -P_sun * a_illuminated[:, np.newaxis] * c_illuminated[:, np.newaxis] * s_hat
 
-# Combined force vector per illuminated face
-force_s_component = -(1 - albedo * B_spec) * s_hat[np.newaxis, :]
-force_n_component = -f_normal_coeff * n_illuminated
+# Component 2: Thermal Recoil Force (acts along normal vectors)
+F_trf = -(2.0 / 3.0) * (1.0 - albedo) * P_sun * a_illuminated[:, np.newaxis] * c_illuminated[:, np.newaxis] * n_illuminated
 
-face_forces = P_sun * a_illuminated[:, np.newaxis] * c_illuminated[:, np.newaxis] * (force_s_component + force_n_component)
+# Total Net Force per Facet
+face_forces = F_srp + F_trf
 
 # Summing net force
 total_yorp_force = np.sum(face_forces, axis=0)
